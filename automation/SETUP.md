@@ -46,7 +46,7 @@ If the hand-off ever fails, the entry is still saved, a note is added to it and 
 ## Good to know
 
 * GitHub's free allowance covers roughly 500 reports a month.
-* Checks run one at a time, so a burst of requests just queues.
+* Several requests at once simply run side by side.
 * Each report is also kept on the run's page in GitHub for 30 days.
 * The visitor's name and email pass through GitHub to reach you. Mention GitHub (a US service) as a processor in the privacy policy.
 * Google Business Profile and Google position are never automatic. The report email includes the exact command to re-run with them added.
