@@ -49,4 +49,4 @@ If the hand-off ever fails, the entry is still saved, a note is added to it and 
 * Several requests at once simply run side by side.
 * Each report is also kept on the run's page in GitHub for 30 days.
 * The visitor's name and email pass through GitHub to reach you. Mention GitHub (a US service) as a processor in the privacy policy.
-* Google Business Profile and Google position are never automatic. The report email includes the exact command to re-run with them added.
+* Google Business Profile and Google position are never automatic. To add them, use Run workflow (the report email links to it).
