@@ -48,7 +48,7 @@ permissions:
 
 jobs:
   check:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04  # pinned so the browser install is not caught out by the move to Ubuntu 26
     timeout-minutes: 30
     env:
       # Everything from the form arrives as environment variables, never pasted into
@@ -71,9 +71,9 @@ jobs:
       SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
       REPORT_TO: ${{ secrets.REPORT_TO }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
           cache: pip
@@ -88,7 +88,7 @@ jobs:
 
       - name: Keep a copy of the report for 30 days
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: health-check-report
           path: reports/
