@@ -27,7 +27,7 @@
   /* Cover */
   .cover { background: var(--paper); display: flex; flex-direction: column; height: 297mm; padding: 18mm; overflow: hidden; }
   .cover .arc { position: absolute; right: -62mm; top: -48mm; width: 150mm; height: 150mm; }
-  .cover .logo { width: 30mm; height: auto; position: relative; }
+  .cover .lockup { width: 78mm; height: auto; position: relative; display: block; }
   .ctalogo { width: 30mm; height: auto; flex: 0 0 auto; }
   .cover .title { margin-top: 60mm; position: relative; max-width: 130mm; }
   .cover .title h1 { font-size: 40pt; font-weight: 800; color: var(--teal); letter-spacing: -.045em; line-height: .98; margin-top: 4mm; }
@@ -103,8 +103,8 @@
 </style>
 </head>
 <body>
-{%- macro mark(id, cls="") -%}
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 684 627" role="img" aria-label="Creative Mushroom" class="{{ cls }}">
+{%- macro mark(id, cls="", w="", h="") -%}
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 684 627" role="img" aria-label="Creative Mushroom" class="{{ cls }}"{% if w %} width="{{ w }}" height="{{ h }}"{% endif %}>
   <defs>
     <path id="cm-c-{{ id }}" d="M25.161,440.334 C41.862,478.473 64.683,511.314 93.636,538.871 C122.576,566.429 156.684,587.723 195.932,602.754 C235.180,617.785 277.064,625.301 321.609,625.301 C371.152,625.301 415.411,617.368 454.385,601.501 C493.346,585.635 526.201,564.341 552.923,537.619 L431.003,391.482 C421.530,404.295 408.587,415.425 392.172,424.885 C375.745,434.358 356.121,439.081 333.300,439.081 C317.147,439.081 301.842,436.158 287.372,430.313 C272.888,424.467 260.232,415.986 249.376,404.843 C238.520,393.713 229.882,380.496 223.489,365.178 C217.082,349.872 213.886,332.479 213.886,312.986 C213.886,293.505 216.939,275.825 223.071,259.959 C229.191,244.093 237.685,230.601 248.541,219.458 C259.397,208.329 272.053,199.834 286.536,193.989 C301.007,188.143 316.599,185.221 333.300,185.221 C353.890,185.221 372.548,188.978 389.250,196.494 C405.951,204.010 419.860,215.009 431.003,229.479 L552.923,82.507 C525.640,57.455 491.676,37.557 451.045,22.800 C410.400,8.056 367.251,0.671 321.609,0.671 C277.064,0.671 235.180,8.056 195.932,22.800 C156.684,37.557 122.576,58.578 93.636,85.848 C64.683,113.131 41.862,145.973 25.161,184.386 C8.459,222.799 0.109,265.674 0.109,312.986 C0.109,359.750 8.459,402.208 25.161,440.334 Z"/>
     <path id="cm-m-{{ id }}" d="M0 0H96.5L115.5 129L132 0H228V283H163V99L138 283H93L65 103V283H0Z"/>
@@ -117,6 +117,13 @@
   <use href="#cm-c-{{ id }}" fill="#F3A005" mask="url(#cm-gap-{{ id }})"/>
   <use href="#cm-m-{{ id }}" transform="translate(455 338)" fill="#156082"/>
   <use href="#cm-c-{{ id }}" fill="#F3A005" clip-path="url(#cm-tip-{{ id }})"/>
+</svg>
+{%- endmacro -%}
+{%- macro lockup(id) -%}
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2090 630" role="img" aria-label="Creative Mushroom" class="lockup">
+  {{ mark(id, "", 684, 627) }}
+  <text x="548" y="300" font-family="Poppins, Arial, sans-serif" font-weight="700" font-size="370" textLength="1362" lengthAdjust="spacingAndGlyphs" fill="#000">reative</text>
+  <text x="694" y="621" font-family="Poppins, Arial, sans-serif" font-weight="700" font-size="370" textLength="1390" lengthAdjust="spacingAndGlyphs" fill="#000">ushroom</text>
 </svg>
 {%- endmacro -%}
 {%- macro barclass(pct) -%}{% if pct >= 80 %}{% elif pct >= 55 %}mid{% else %}low{% endif %}{%- endmacro -%}
@@ -134,7 +141,7 @@
     <circle cx="380" cy="380" r="290" fill="none" stroke="#F3A005" stroke-width="170" stroke-dasharray="1420 402" transform="rotate(39.6 380 380)"/>
     <rect x="470" y="430" width="150" height="170" fill="#156082"/>
   </svg>
-  {{ mark("cover", "logo") }}
+  {{ lockup("cover") }}
   <div class="title">
     <div class="eyebrow">Free Website Health Check</div>
     <h1>How healthy is <span>your website?</span></h1>
