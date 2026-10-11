@@ -8,10 +8,11 @@ Scoring follows the Health Check scoring spec. All the thresholds live in `scori
 
 1. Open Terminal and go to this folder, for example:
    `cd ~/Documents/cm-health-check`
-2. Install the tools (once):
+2. Install the tools (once). They go into a private `.venv` folder inside this folder, so nothing else on your Mac is touched:
    ```
-   python3 -m pip install -r requirements.txt
-   python3 -m playwright install chromium
+   python3 -m venv .venv
+   .venv/bin/python -m pip install -r requirements.txt
+   .venv/bin/python -m playwright install chromium
    ```
 3. Add your Google PageSpeed Insights key (see below). Without a key the tool still works, but speed is measured with our own rougher phone test, and the two Lighthouse scores are left out.
 
@@ -31,7 +32,7 @@ It is free (25,000 checks a day). Never paste the key into an email or chat.
 ## Running a check
 
 ```
-python3 health_check.py https://www.example.co.uk --name "Example Ltd"
+.venv/bin/python health_check.py https://www.example.co.uk --name "Example Ltd"
 ```
 
 Useful options:
@@ -47,7 +48,7 @@ Useful options:
 A typical hospitality run:
 
 ```
-python3 health_check.py thesaltygull.co.uk --name "The Salty Gull" --business-type hospitality --gbp mismatch --rank "Not on page one for 'pub with rooms Falmouth'."
+.venv/bin/python health_check.py thesaltygull.co.uk --name "The Salty Gull" --business-type hospitality --gbp mismatch --rank "Not on page one for 'pub with rooms Falmouth'."
 ```
 
 It takes two to four minutes. The PDF, a web copy and a data file land in `reports/`.

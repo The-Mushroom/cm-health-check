@@ -1,3 +1,4 @@
 settings.ini
 reports/
 __pycache__/
+.venv/
