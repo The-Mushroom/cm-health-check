@@ -26,7 +26,7 @@
         "viewport": {"label": "Viewport set for phones", "points": 4, "type": "map", "map": {"ok": 4, "missing": 0}},
         "tap_targets": {"label": "Buttons and links big enough to tap", "points": 4, "type": "min", "tiers": [[0.95, 4], [0.8, 2]]},
         "accessibility": {"label": "Lighthouse accessibility score", "points": 4, "type": "min", "tiers": [[90, 4], [70, 2]]},
-        "font_size": {"label": "Readable text size", "points": 3, "type": "min", "tiers": [[16, 3], [14, 1]]},
+        "font_size": {"label": "Readable text size", "points": 3, "type": "min", "tiers": [[16, 3], [15, 2], [13, 1]]},
         "tel_links": {"label": "Tap to call phone numbers", "points": 3, "type": "map", "map": {"all": 3, "some": 1, "none": 0, "na": 3}},
         "images_sized": {"label": "Images sized for the screen", "points": 2, "type": "min", "tiers": [[1.0, 2], [0.8, 1]]}
       }

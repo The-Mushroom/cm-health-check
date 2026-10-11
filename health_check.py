@@ -372,7 +372,7 @@ MOBILE_JS = r"""
   const sizes = paras.map(el => parseFloat(getComputedStyle(el).fontSize)).sort((a,b)=>a-b);
   const med = sizes.length ? sizes[Math.floor(sizes.length/2)] : null;
   const imgs = [...document.images].filter(i => vis(i) && i.naturalWidth > 0 && i.getBoundingClientRect().width >= 40);
-  const okImgs = imgs.filter(i => i.srcset || i.currentSrc !== i.src || i.naturalWidth <= Math.min(i.getBoundingClientRect().width, vw) * 2.2).length;
+  const okImgs = imgs.filter(i => i.srcset || i.currentSrc !== i.src || i.naturalWidth <= Math.min(i.getBoundingClientRect().width, vw) * 3.2).length;
   return {overflow, targets: targets.length, bigEnough, fontSize: med, images: imgs.length, okImages: okImgs};
 }
 """
