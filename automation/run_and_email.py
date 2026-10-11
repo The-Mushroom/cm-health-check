@@ -132,7 +132,8 @@ def main():
     pdfs = sorted(OUT.glob("*.pdf"), key=lambda p: p.stat().st_mtime)
     if proc.returncode != 0 or not pdfs:
         tail = (proc.stdout + "\n" + proc.stderr).strip()[-2500:]
-        send(f"Health check failed: {name or url}",
+        blocked = "bot protection" in proc.stdout + proc.stderr
+        send(f"Health check {'blocked by bot protection' if blocked else 'failed'}: {name or url}",
              f"The health check for {url} did not finish, so there is no report yet.\n\n"
              f"Who asked:\n{contact_block()}\n\nLast lines of the log:\n{tail}\n\nFull run log: {run_url}\n")
         sys.exit(1)

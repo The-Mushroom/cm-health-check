@@ -62,6 +62,20 @@ BOOKING_HOSTS = ("opentable", "resdiary", "designmynight", "sevenrooms", "bookin
                  "nobeds", "siteminder", "superbreak", "tablebooker", "dojo.app")
 SPAM_PROTECTION_RE = re.compile(r"(g-recaptcha|recaptcha/api|h-captcha|hcaptcha|cf-turnstile|challenges\.cloudflare\.com/turnstile|"
                                 r"gfield--type-honeypot|gform_validation_container|wpcf7-|akismet|honeypot|hp-field|friendly-captcha|frc-captcha)", re.I)
+# Bot protection pages (SiteGround, Cloudflare and others) that stand in for the real site
+CHALLENGE_RE = re.compile(r"sgcaptcha|/\.well-known/captcha|cf-chl|challenge-platform|cf_chl_opt|Just a moment\.\.\.|"
+                          r"Checking your browser|ddos-guard|_Incapsula_Resource|captcha-delivery|px-captcha|"
+                          r"Attention Required! \| Cloudflare|Robot Challenge Screen", re.I)
+BLOCKED_MSG = ("The site's bot protection answered instead of the real website, so the check stopped rather than "
+               "score a security screen. No report was made. If this is a site you look after, allow the checker "
+               "in the host's bot protection settings (on SiteGround: Site Tools, Security) and run it again.")
+
+
+def looks_blocked(status, text):
+    head = (text or "")[:30000]
+    return bool(CHALLENGE_RE.search(head)) or (status == 202 and "<a " not in head.lower())
+
+
 SCHEMA_TYPES = {"organization", "localbusiness", "restaurant", "hotel", "lodgingbusiness", "store", "professionalservice",
                 "foodestablishment", "barorpub", "cafeorcoffeeshop", "bedandbreakfast", "campground", "homeandconstructionbusiness",
                 "legalservice", "accountingservice", "medicalbusiness", "autorepair", "corporation", "onlinestore", "ngo"}
@@ -240,6 +254,12 @@ class Crawler:
                 continue
             ctype = r.headers.get("Content-Type", "")
             if "html" not in ctype:
+                continue
+            if looks_blocked(r.status_code, r.text):
+                if not self.pages:
+                    self.log(f"  {r.status_code} {url}  (bot protection page, not the real site)")
+                    raise SystemExit(BLOCKED_MSG)
+                self.log(f"  skipped {url}: bot protection page")
                 continue
             page = Page(url, r.status_code, r.url, dict(r.headers), r.text, len(r.content),
                         [h.url for h in r.history])
