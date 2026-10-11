@@ -1,0 +1,76 @@
+{
+  "_about": "Creative Mushroom Website Health Check scoring rules. Edit thresholds here, not in the code. Types: max (lower is better), min (higher is better), map (named result), ratio_band (proportional between zero_below and full_at). A check that returns null was not measured and is left out; its category is scaled to the points that were measured.",
+  "bands": [
+    [85, "In good shape", "A healthy site. A few small wins listed."],
+    [70, "Mostly healthy", "Working, but leaving some customers on the table."],
+    [50, "Needs attention", "Clear problems that are likely costing enquiries."],
+    [0, "Quietly costing you", "Urgent fixes, starting with security and speed."]
+  ],
+  "categories": {
+    "speed": {
+      "label": "Speed",
+      "points": 25,
+      "checks": {
+        "lcp": {"label": "Main content load time (LCP)", "points": 8, "type": "max", "tiers": [[2500, 8], [4000, 4]]},
+        "responsiveness": {"label": "Responsiveness", "points": 6, "type": "max", "tiers_by_source": {"inp": [[200, 6], [500, 3]], "tbt": [[200, 6], [600, 3]]}},
+        "cls": {"label": "Layout stability (CLS)", "points": 5, "type": "max", "tiers": [[0.1, 5], [0.25, 2]]},
+        "performance": {"label": "Lighthouse performance score", "points": 4, "type": "min", "tiers": [[90, 4], [50, 2]]},
+        "weight": {"label": "Homepage weight", "points": 2, "type": "max", "tiers": [[2000000, 2], [4000000, 1]]}
+      }
+    },
+    "mobile": {
+      "label": "Mobile",
+      "points": 25,
+      "checks": {
+        "overflow": {"label": "Fits a phone screen", "points": 5, "type": "ratio_band", "full_at": 1.0, "zero_below": 0.0},
+        "viewport": {"label": "Viewport set for phones", "points": 4, "type": "map", "map": {"ok": 4, "missing": 0}},
+        "tap_targets": {"label": "Buttons and links big enough to tap", "points": 4, "type": "min", "tiers": [[0.95, 4], [0.8, 2]]},
+        "accessibility": {"label": "Lighthouse accessibility score", "points": 4, "type": "min", "tiers": [[90, 4], [70, 2]]},
+        "font_size": {"label": "Readable text size", "points": 3, "type": "min", "tiers": [[16, 3], [14, 1]]},
+        "tel_links": {"label": "Tap to call phone numbers", "points": 3, "type": "map", "map": {"all": 3, "some": 1, "none": 0, "na": 3}},
+        "images_sized": {"label": "Images sized for the screen", "points": 2, "type": "min", "tiers": [[1.0, 2], [0.8, 1]]}
+      }
+    },
+    "findability": {
+      "label": "Findability",
+      "points": 20,
+      "checks": {
+        "titles": {"label": "Unique page titles", "points": 4, "type": "ratio_band", "full_at": 0.9, "zero_below": 0.5},
+        "indexable": {"label": "Visible to Google", "points": 3, "type": "map", "map": {"ok": 3, "blocked": 0}},
+        "meta_descriptions": {"label": "Search result descriptions", "points": 3, "type": "ratio_band", "full_at": 0.9, "zero_below": 0.5},
+        "h1": {"label": "One clear main heading per page", "points": 2, "type": "min", "tiers": [[0.9, 2], [0.7, 1]]},
+        "sitemap": {"label": "XML sitemap", "points": 2, "type": "map", "map": {"listed": 2, "found": 1, "none": 0}},
+        "schema": {"label": "Business details for search engines", "points": 2, "type": "map", "map": {"valid": 2, "errors": 1, "none": 0}},
+        "alt_text": {"label": "Image descriptions", "points": 2, "type": "min", "tiers": [[0.9, 2], [0.6, 1]]},
+        "gbp": {"label": "Google Business Profile", "points": 2, "type": "map", "map": {"match": 2, "mismatch": 1, "none": 0, "na": 2}}
+      }
+    },
+    "trust": {
+      "label": "Trust and security",
+      "points": 15,
+      "checks": {
+        "https": {"label": "Secure connection (HTTPS)", "points": 4, "type": "map", "map": {"enforced": 4, "no_redirect": 2, "none": 0}},
+        "headers": {"label": "Security headers", "points": 3, "type": "min", "tiers": [[4, 3], [2, 1]]},
+        "cms_version": {"label": "WordPress version", "points": 2, "type": "map", "map": {"hidden": 2, "current": 2, "one_behind": 1, "older": 0, "not_wordpress": 2}},
+        "plugins": {"label": "Plugins up to date", "points": 2, "type": "map", "map": {"current": 2, "none_visible": 2, "one_outdated": 1, "outdated": 0}},
+        "certificate": {"label": "Security certificate lifetime", "points": 1, "type": "min", "tiers": [[15, 1]]},
+        "mixed_content": {"label": "Everything loads securely", "points": 1, "type": "map", "map": {"ok": 1, "found": 0}},
+        "forms": {"label": "Forms protected from spam", "points": 1, "type": "map", "map": {"protected": 1, "no_forms": 1, "unprotected": 0}},
+        "privacy": {"label": "Privacy policy", "points": 1, "type": "map", "map": {"ok": 1, "missing": 0}}
+      }
+    },
+    "housekeeping": {
+      "label": "Housekeeping",
+      "points": 15,
+      "checks": {
+        "broken_links": {"label": "Broken links", "points": 5, "type": "max", "tiers": [[0, 5], [3, 3]]},
+        "oversized_images": {"label": "Oversized images", "points": 3, "type": "max", "tiers": [[0, 3], [3, 1]]},
+        "redirect_chains": {"label": "Redirect chains", "points": 2, "type": "max", "tiers": [[0, 2], [2, 1]]},
+        "page_404": {"label": "Helpful page not found", "points": 2, "type": "map", "map": {"good": 2, "bare": 1, "bad": 0}},
+        "leftovers": {"label": "Leftover placeholders and dead embeds", "points": 2, "type": "max", "tiers": [[0, 2]]},
+        "copyright": {"label": "Copyright year", "points": 1, "type": "map", "map": {"current": 1, "none": 1, "old": 0}}
+      }
+    }
+  },
+  "crawl": {"max_pages": 25, "delay_seconds": 1.0, "timeout_seconds": 20, "max_link_checks": 250, "max_image_checks": 60, "mobile_pages": 10}
+}

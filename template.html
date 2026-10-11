@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<title>Website Health Check: {{ name }}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  @page { size: A4; margin: 14mm 0 16mm; }
+  @page :first { margin: 0; }
+  :root { --teal:#156082; --teal-dark:#0E4560; --amber:#F3A005; --paper:#F2F2F0; --ink:#000; --slate:#5A7282; --line:#DADDDF; --soft:#E8ECEE; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body { font-family: 'Poppins', 'Helvetica Neue', Arial, sans-serif; color: var(--ink); background: #fff; font-size: 10.5pt; line-height: 1.5;
+         -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .page { width: 210mm; padding: 4mm 18mm 0; position: relative; page-break-after: always; }
+  .page:last-child { page-break-after: auto; }
+  .eyebrow { font-size: 8pt; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--slate); }
+  h1, h2, h3 { margin: 0; letter-spacing: -.02em; line-height: 1.1; }
+  h2 { font-size: 20pt; font-weight: 800; color: var(--teal); }
+  h3 { font-size: 12pt; font-weight: 700; }
+  p { margin: 0; }
+  .running { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--line); padding-bottom: 5mm; margin-bottom: 8mm; }
+  .running svg { height: 9mm; width: auto; }
+  .running .eyebrow { text-align: right; }
+  
+  /* Cover */
+  .cover { background: var(--paper); display: flex; flex-direction: column; height: 297mm; padding: 18mm; overflow: hidden; }
+  .cover .arc { position: absolute; right: -62mm; top: -48mm; width: 150mm; height: 150mm; }
+  .cover .logo { width: 30mm; height: auto; position: relative; }
+  .ctalogo { width: 30mm; height: auto; flex: 0 0 auto; }
+  .cover .title { margin-top: 60mm; position: relative; max-width: 130mm; }
+  .cover .title h1 { font-size: 40pt; font-weight: 800; color: var(--teal); letter-spacing: -.045em; line-height: .98; margin-top: 4mm; }
+  .cover .title h1 span { color: var(--ink); }
+  .cover .who { margin-top: 10mm; position: relative; }
+  .cover .who .name { font-size: 18pt; font-weight: 700; }
+  .cover .who .meta { color: var(--slate); margin-top: 1mm; word-break: break-all; }
+  .scorecard { margin-top: auto; background: #fff; border-radius: 6mm; padding: 9mm; display: flex; gap: 9mm; align-items: center; position: relative; }
+  .ring { width: 46mm; height: 46mm; flex: 0 0 auto; position: relative; }
+  .ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+  .ring .num { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .ring .num b { font-size: 34pt; font-weight: 800; color: var(--teal); line-height: 1; letter-spacing: -.04em; }
+  .ring .num small { font-size: 9pt; color: var(--slate); font-weight: 600; }
+  .bandname { font-size: 20pt; font-weight: 800; letter-spacing: -.02em; line-height: 1.1; }
+  .bandblurb { margin-top: 2mm; color: var(--slate); font-size: 11pt; }
+  .cats { margin-top: 6mm; display: grid; grid-template-columns: 1fr; gap: 2.2mm; }
+  .catrow { display: grid; grid-template-columns: 34mm 1fr 14mm; align-items: center; gap: 3mm; font-size: 9pt; }
+  .catrow .lbl { font-weight: 600; }
+  .bar { height: 2.6mm; border-radius: 2mm; background: var(--soft); overflow: hidden; }
+  .bar i { display: block; height: 100%; border-radius: 2mm; background: var(--teal); }
+  .bar i.mid { background: var(--amber); }
+  .bar i.low { background: #C2410C; }
+  .catrow .sc { text-align: right; font-weight: 700; }
+
+  /* Summary page */
+  .lead { font-size: 11.5pt; max-width: 150mm; }
+  .tiles { display: grid; grid-template-columns: repeat(5, 1fr); gap: 3mm; margin-top: 8mm; }
+  .tile { border-radius: 4mm; background: var(--paper); padding: 4.5mm 4mm; }
+  .tile .eyebrow { font-size: 7pt; }
+  .tile b { display: block; font-size: 22pt; font-weight: 800; color: var(--teal); letter-spacing: -.03em; margin-top: 1.5mm; line-height: 1; }
+  .tile b small { font-size: 9pt; color: var(--slate); font-weight: 600; letter-spacing: 0; }
+  .tile .lost { font-size: 8pt; color: var(--slate); margin-top: 1.5mm; }
+  .panel { border-radius: 5mm; padding: 6mm 8mm; margin-top: 6mm; page-break-inside: avoid; }
+  .panel.fix { background: var(--amber); }
+  .panel.fix .eyebrow { color: var(--ink); }
+  .panel.fix h3 { font-size: 15pt; font-weight: 800; margin: 2mm 0 2.5mm; }
+  .panel.teal { background: var(--teal); color: #fff; }
+  .panel.teal .eyebrow { color: var(--amber); }
+  .panel.teal h3 { font-size: 13pt; margin: 2mm 0 2mm; }
+  .panel.paper { background: var(--paper); }
+  .panel.paper h3 { margin: 2mm 0 2mm; color: var(--teal); }
+
+  /* Category detail */
+  .cat { margin-top: 8mm; page-break-inside: auto; }
+  .cat:first-of-type { margin-top: 0; }
+  .cathead { display: flex; align-items: baseline; justify-content: space-between; border-bottom: 2px solid var(--teal); padding-bottom: 2mm; page-break-after: avoid; }
+  .cathead h2 { font-size: 16pt; }
+  .cathead .s { font-size: 16pt; font-weight: 800; color: var(--teal); }
+  .cathead .s small { font-size: 9pt; color: var(--slate); font-weight: 600; }
+  .finding { display: grid; grid-template-columns: 1fr 16mm; gap: 4mm; padding: 3.5mm 0; border-bottom: 1px solid var(--line); page-break-inside: avoid; }
+  .finding h3 { font-size: 10.5pt; }
+  .finding .found { margin-top: 1mm; }
+  .finding .cost { margin-top: 1.5mm; color: var(--slate); font-size: 9.5pt; padding-left: 3mm; border-left: 2px solid var(--amber); }
+  .finding .pts { text-align: right; font-weight: 700; font-size: 10pt; white-space: nowrap; }
+  .finding .pts small { display: block; font-size: 7pt; color: var(--slate); font-weight: 600; text-transform: uppercase; letter-spacing: .08em; }
+  .good { margin-top: 3mm; font-size: 9pt; color: var(--slate); }
+  .good b { color: var(--ink); font-weight: 600; }
+  .tick { display: inline-block; margin-right: 4mm; white-space: nowrap; }
+  .tick::before { content: ""; display: inline-block; width: 2.2mm; height: 2.2mm; border-radius: 50%; background: var(--teal); margin-right: 1.4mm; vertical-align: .2mm; }
+  .unmeasured { margin-top: 2mm; font-size: 8.5pt; color: var(--slate); font-style: italic; }
+  .allclear { padding: 4mm 0; color: var(--slate); }
+
+  /* Notes and close */
+  .note { padding: 3.5mm 0; border-bottom: 1px solid var(--line); page-break-inside: avoid; }
+  .note:last-child { border-bottom: 0; }
+  .note h3 { font-size: 10.5pt; }
+  .note p { margin-top: 1mm; }
+  .method { font-size: 8.5pt; color: var(--slate); margin-top: 8mm; }
+  .method p + p { margin-top: 2mm; }
+  .cta { display: flex; gap: 8mm; align-items: center; }
+  .cta .big { font-size: 18pt; font-weight: 800; letter-spacing: -.02em; line-height: 1.15; }
+  .cta .contact { font-weight: 600; margin-top: 2mm; }
+</style>
+</head>
+<body>
+{%- macro mark(id, cls="") -%}
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 684 627" role="img" aria-label="Creative Mushroom" class="{{ cls }}">
+  <defs>
+    <path id="cm-c-{{ id }}" d="M25.161,440.334 C41.862,478.473 64.683,511.314 93.636,538.871 C122.576,566.429 156.684,587.723 195.932,602.754 C235.180,617.785 277.064,625.301 321.609,625.301 C371.152,625.301 415.411,617.368 454.385,601.501 C493.346,585.635 526.201,564.341 552.923,537.619 L431.003,391.482 C421.530,404.295 408.587,415.425 392.172,424.885 C375.745,434.358 356.121,439.081 333.300,439.081 C317.147,439.081 301.842,436.158 287.372,430.313 C272.888,424.467 260.232,415.986 249.376,404.843 C238.520,393.713 229.882,380.496 223.489,365.178 C217.082,349.872 213.886,332.479 213.886,312.986 C213.886,293.505 216.939,275.825 223.071,259.959 C229.191,244.093 237.685,230.601 248.541,219.458 C259.397,208.329 272.053,199.834 286.536,193.989 C301.007,188.143 316.599,185.221 333.300,185.221 C353.890,185.221 372.548,188.978 389.250,196.494 C405.951,204.010 419.860,215.009 431.003,229.479 L552.923,82.507 C525.640,57.455 491.676,37.557 451.045,22.800 C410.400,8.056 367.251,0.671 321.609,0.671 C277.064,0.671 235.180,8.056 195.932,22.800 C156.684,37.557 122.576,58.578 93.636,85.848 C64.683,113.131 41.862,145.973 25.161,184.386 C8.459,222.799 0.109,265.674 0.109,312.986 C0.109,359.750 8.459,402.208 25.161,440.334 Z"/>
+    <path id="cm-m-{{ id }}" d="M0 0H96.5L115.5 129L132 0H228V283H163V99L138 283H93L65 103V283H0Z"/>
+    <mask id="cm-gap-{{ id }}" maskUnits="userSpaceOnUse" x="0" y="0" width="684" height="627">
+      <rect width="684" height="627" fill="#fff"/>
+      <use href="#cm-m-{{ id }}" transform="translate(455 338)" fill="#000" stroke="#000" stroke-width="14"/>
+    </mask>
+    <clipPath id="cm-tip-{{ id }}"><rect x="520" y="338" width="164" height="289"/></clipPath>
+  </defs>
+  <use href="#cm-c-{{ id }}" fill="#F3A005" mask="url(#cm-gap-{{ id }})"/>
+  <use href="#cm-m-{{ id }}" transform="translate(455 338)" fill="#156082"/>
+  <use href="#cm-c-{{ id }}" fill="#F3A005" clip-path="url(#cm-tip-{{ id }})"/>
+</svg>
+{%- endmacro -%}
+{%- macro barclass(pct) -%}{% if pct >= 80 %}{% elif pct >= 55 %}mid{% else %}low{% endif %}{%- endmacro -%}
+{%- macro pts(n) -%}{{ ('%g' % n) }}{%- endmacro -%}
+{%- macro running(id, title) -%}
+<div class="running">{{ mark(id) }}<div class="eyebrow">Website Health Check<br>{{ name }}</div></div>
+{%- endmacro -%}
+{%- macro foot(n) -%}
+<div class="foot"><span>Creative Mushroom &middot; creativemushroom.co.uk</span><span>{{ host }} &middot; {{ date }}</span></div>
+{%- endmacro -%}
+
+<!-- Cover -->
+<section class="page cover">
+  <svg class="arc" viewBox="0 0 760 760" aria-hidden="true">
+    <circle cx="380" cy="380" r="290" fill="none" stroke="#F3A005" stroke-width="170" stroke-dasharray="1420 402" transform="rotate(39.6 380 380)"/>
+    <rect x="470" y="430" width="150" height="170" fill="#156082"/>
+  </svg>
+  {{ mark("cover", "logo") }}
+  <div class="title">
+    <div class="eyebrow">Free Website Health Check</div>
+    <h1>How healthy is <span>your website?</span></h1>
+  </div>
+  <div class="who">
+    <div class="name">{{ name }}</div>
+    <div class="meta">{{ url }}</div>
+    <div class="meta">Checked on {{ date }}</div>
+  </div>
+  {% set circ = 2 * 3.14159 * 42 %}
+  <div class="scorecard">
+    <div class="ring">
+      <svg viewBox="0 0 100 100" aria-hidden="true">
+        <circle cx="50" cy="50" r="42" fill="none" stroke="#E8ECEE" stroke-width="10"/>
+        <circle cx="50" cy="50" r="42" fill="none" stroke="{% if total >= 70 %}#156082{% elif total >= 50 %}#F3A005{% else %}#C2410C{% endif %}" stroke-width="10" stroke-linecap="round"
+                stroke-dasharray="{{ '%.1f' % (circ * total / 100) }} {{ '%.1f' % circ }}"/>
+      </svg>
+      <div class="num"><b>{{ total }}</b><small>out of 100</small></div>
+    </div>
+    <div style="flex:1; min-width:0">
+      <div class="eyebrow">Overall</div>
+      <div class="bandname">{{ band }}</div>
+      <p class="bandblurb">{{ band_blurb }}</p>
+      <div class="cats">
+        {% for c in cats %}
+        <div class="catrow"><span class="lbl">{{ c.label }}</span><span class="bar"><i class="{{ barclass(c.pct) }}" style="width: {{ c.pct }}%"></i></span><span class="sc">{{ c.score }}/{{ c.max }}</span></div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Summary -->
+<section class="page">
+  {{ running("s", "Summary") }}
+  <div class="eyebrow">At a glance</div>
+  <h2 style="margin-top:2mm">{{ total }} out of 100: {{ band | lower }}</h2>
+  {% set lostcount = cats | map(attribute="lost") | map("length") | sum %}
+  <p class="lead" style="margin-top:4mm">
+    We checked {{ facts.pages_crawled or "your" }} page{{ "" if facts.pages_crawled == 1 else "s" }} of {{ host }} from the outside, the way a visitor and Google see it, across five areas.
+    {% if lostcount %}We found {{ lostcount }} thing{{ "" if lostcount == 1 else "s" }} costing you points. Each one is explained over the page in plain English, along with what it is likely costing you.{% else %}Nothing we test for is costing you points. That is rare, and well done.{% endif %}
+  </p>
+  <div class="tiles">
+    {% for c in cats %}
+    <div class="tile">
+      <div class="eyebrow">{{ c.label }}</div>
+      <b>{{ c.score }}<small> /{{ c.max }}</small></b>
+      <div class="lost">{% if c.lost %}{{ c.lost | length }} issue{{ "" if c.lost | length == 1 else "s" }}{% else %}All clear{% endif %}</div>
+    </div>
+    {% endfor %}
+  </div>
+
+  {% if fix %}
+  <div class="panel fix">
+    <div class="eyebrow">Your free fix</div>
+    <h3>{{ fix.title }}</h3>
+    <p>{{ fix.body }}</p>
+    <p style="margin-top:2.5mm; font-size:9pt">You can do this one yourself today, no technical knowledge needed.</p>
+  </div>
+  {% endif %}
+
+  {% if rank %}
+  <div class="panel paper">
+    <div class="eyebrow">Where you appear on Google</div>
+    <h3>Your search position</h3>
+    <p>{{ rank }}</p>
+  </div>
+  {% endif %}
+
+  <div class="panel teal">
+    <div class="eyebrow">How we scored it</div>
+    <h3>Every point is measured, not a matter of opinion</h3>
+    <p>Speed and Mobile carry 25 points each, Findability 20, Trust and security 15, Housekeeping 15. Speed was measured using {{ speed_source }}. Anything we could not measure fairly is left out, and that area is scored on what we could measure.</p>
+  </div>
+</section>
+
+<!-- Detail -->
+<section class="page">
+  {{ running("d", "Findings") }}
+  <div class="eyebrow">What we found</div>
+  <h2 style="margin:2mm 0 7mm">The detail, area by area</h2>
+  {% for c in cats %}
+  <div class="cat">
+    <div class="cathead"><h2>{{ c.label }}</h2><div class="s">{{ c.score }}<small> /{{ c.max }}</small></div></div>
+    {% if c.lost %}
+      {% for r in c.lost %}
+      <div class="finding">
+        <div>
+          <h3>{{ r.label }}</h3>
+          {% if r.detail %}<p class="found">{{ r.detail }}</p>{% endif %}
+          {% if r.impact %}<p class="cost">{{ r.impact }}</p>{% endif %}
+        </div>
+        <div class="pts">{{ pts(r.earned) }}/{{ pts(r.points) }}<small>points</small></div>
+      </div>
+      {% endfor %}
+    {% else %}
+      <p class="allclear">Nothing in this area is costing you points.</p>
+    {% endif %}
+    {% if c.good %}
+    <p class="good"><b>Working well:</b> {% for r in c.good %}<span class="tick">{{ r.label }}</span>{% endfor %}</p>
+    {% endif %}
+    {% if c.unmeasured %}
+    <p class="unmeasured">Not measured this time: {{ c.unmeasured | join(", ") }}. This area is scored on the checks we could run.</p>
+    {% endif %}
+  </div>
+  {% endfor %}
+</section>
+
+<!-- Notes and next steps -->
+<section class="page">
+  {{ running("n", "Next steps") }}
+  {% if notes %}
+  <div class="eyebrow">For hospitality businesses</div>
+  <h2 style="margin:2mm 0 2mm">A few things worth knowing</h2>
+  <p style="color:var(--slate); margin-bottom:3mm">These are not part of your score. They are things we see costing pubs, restaurants, cafes and places to stay bookings and repeat visits.</p>
+  {% for n in notes %}
+  <div class="note"><h3>{{ n[0] }}</h3><p>{{ n[1] }}</p></div>
+  {% endfor %}
+  {% endif %}
+
+  <div class="panel paper" {% if not notes %}style="margin-top:0"{% endif %}>
+    <div class="cta">
+      <div style="flex:1">
+        <div class="eyebrow">What happens next</div>
+        <div class="big" style="margin-top:2mm">Want to talk it through? The chat is always free.</div>
+        <p style="margin-top:2.5mm">We will walk you through this report, answer any questions and, if you would like help, give you a fixed price for putting things right. No pressure and no jargon.</p>
+        <p class="contact">Aaron Coward &middot; hello@creativemushroom.co.uk &middot; creativemushroom.co.uk</p>
+      </div>
+      {{ mark("cta", "ctalogo") }}
+    </div>
+  </div>
+
+  <div class="method">
+    <div class="eyebrow" style="margin-bottom:2mm">About this check</div>
+    <p>This report was produced by the Creative Mushroom Website Health Check (version {{ version }}). We looked at up to {{ facts.pages_crawled or 0 }} pages from the outside only: we did not log in, change anything or see anything private. Speed figures use {{ speed_source }}, and phone checks use a typical modern phone screen 390 pixels wide.</p>
+    <p>Scores reflect the site on {{ date }}. Websites change, and results from tools like Google's can vary a little from one test to the next. Plain English explanations describe the likely effect on visitors and search results, not a guarantee.</p>
+  </div>
+</section>
+</body>
+</html>
