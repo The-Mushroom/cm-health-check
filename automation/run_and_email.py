@@ -148,12 +148,11 @@ def main():
                             for c in cats)
 
     gbp_checked = gbp in ("match", "mismatch", "none", "na")
-    rerun = ["python3", "health_check.py", url, "--business-type", btype]
-    if name:
-        rerun += ["--name", name]
-    rerun += ["--gbp", gbp if gbp_checked else "match", "--rank", rank or "Your note about their Google position"]
-    rerun_txt = " ".join(shlex.quote(c) for c in rerun)
-
+    google_note = ""
+    if not gbp_checked and run_url:
+        workflow_page = run_url.rsplit("/runs/", 1)[0] + "/workflows/health-check.yml"
+        google_note = ("Google Business Profile and Google position are not in this report.\n"
+                       f"To add them, use Run workflow on GitHub: {workflow_page}\n\n")
     body = f"""Hello Aaron,
 
 A new Website Health Check is ready for you to read before sending.
@@ -167,16 +166,7 @@ Score:    {data.get('total', '?')}/100, {data.get('band', '')}
 Who asked:
 {contact_block()}
 
-Before sending, have a look for anything odd. Google Business Profile and their Google
-position are {'included' if gbp_checked else 'not included yet'}. To add them, check by hand, then re-run on your Mac
-from the cm-health-check folder (change match/mismatch/none/na and the note as needed):
-
-  {rerun_txt}
-
-Or use "Run workflow" on the Actions page and the new report will arrive here:
-  {run_url.rsplit('/runs/', 1)[0] if run_url else ''}
-
-The PDF is attached, along with the data file showing every measurement.
+{google_note}The PDF is attached, along with the data file showing every measurement.
 When you are happy with it, forward the PDF to them with your own note.
 
 Creative Mushroom Health Check
