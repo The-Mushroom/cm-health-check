@@ -38,11 +38,6 @@ on:
         description: Note about their Google position (optional)
         required: false
 
-# One check at a time, so a burst of form entries queues up politely.
-concurrency:
-  group: health-check
-  cancel-in-progress: false
-
 permissions:
   contents: read
 

@@ -136,7 +136,7 @@ def main():
         send(f"Health check {'blocked by bot protection' if blocked else 'failed'}: {name or url}",
              f"The health check for {url} did not finish, so there is no report yet.\n\n"
              f"Who asked:\n{contact_block()}\n\nLast lines of the log:\n{tail}\n\nFull run log: {run_url}\n")
-        sys.exit(1)
+        sys.exit(0 if blocked else 1)  # a blocked site is a known outcome, not a broken run
 
     pdf = pdfs[-1]
     data_file = pdf.with_suffix(".json")
